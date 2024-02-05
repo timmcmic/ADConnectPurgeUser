@@ -40,8 +40,17 @@
 
 Param
 (
+    #Define parameters to find user in local active directory.
     [Parameter(Mandatory = $false)]
-    [string]$objectMailAddress
+    [string]$objectMailAddress="",
+    #Define attributes for Active Directory connection.
+    [Parameter(Mandatory = $true)]
+    [string]$globalCatalogServer,
+    [Parameter(Mandatory = $false)]
+    [pscredential]$globalCatalogCredential=$NULL,
+    #Define general paramters.
+    [Parameter(Mandatory = $false)]
+    [string]$logPath
 )
 
 
