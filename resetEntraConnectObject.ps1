@@ -3,7 +3,7 @@
 
 .VERSION 1.0
 
-.GUID 273a5e29-2a69-4872-a2b4-f4e17458aab1
+.GUID a017747a-043e-42a9-bf88-d9bfdb38d65a
 
 .AUTHOR timmcmic@microsoft.com
 
