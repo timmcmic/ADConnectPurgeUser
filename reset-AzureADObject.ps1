@@ -50,7 +50,7 @@ Param
     [pscredential]$globalCatalogCredential=$NULL,
     #Define general paramters.
     [Parameter(Mandatory = $false)]
-    [string]$logPath
+    [string]$logFolderPath
 )
 Function Out-LogFile
      {
@@ -85,7 +85,7 @@ Function Out-LogFile
         
         # Write everything to our log file and the screen
 
-        $logstring | Out-File -FilePath $global:LogFile -Append
+        $logstring | Out-File -FilePath $logFile -Append
     
         #Write to the screen the information passed to the log.
 
@@ -127,5 +127,60 @@ Function Out-LogFile
             exit
         }
     }
+    Function new-LogFile
+    {
+        [cmdletbinding()]
 
+        Param
+        (
+            [Parameter(Mandatory = $true)]
+            [string]$operationName,
+            [Parameter(Mandatory = $true)]
+            [string]$logFolderPath
+        )
+
+        #Define the string separator and then separate the string.
+        
+        $operationName = $operationName.trim()
+
+        #First entry in split array is the prefix of the group - use that for log file name.
+        #The SMTP address may contain letters that are not permitted in a file name - for example ?.
+        #Using regex and a pattern to replace invalid file name characters with a -
+
+        [string]$fileName=$operationName+".log"
+        $pattern = $pattern = '[' + ([System.IO.Path]::GetInvalidFileNameChars() -join '').Replace('\','\\') + ']+'
+        $fileName=[regex]::Replace($fileName, $pattern,"-")
+   
+        # Get our log file path
+
+        $logFolderPath = $logFolderPath+"\"+$operationName+"\"
+        
+        #Since $logFile is defined in the calling function - this sets the log file name for the entire script
+        
+        $logFile = Join-path $logFolderPath $fileName
+
+        #Test the path to see if this exists if not create.
+
+        [boolean]$pathExists = Test-Path -Path $logFolderPath
+
+        if ($pathExists -eq $false)
+        {
+            try 
+            {
+                #Path did not exist - Creating
+
+                New-Item -Path $logFolderPath -Type Directory
+            }
+            catch 
+            {
+                throw $_
+            } 
+        }
+
+        out-logfile -string "================================================================================"
+        out-logfile -string "START LOG FILE"
+        out-logfile -string "================================================================================"
+    }
+
+    new-LogFile -operationName (get-random) -logFolderPath $logFolderPath
 
