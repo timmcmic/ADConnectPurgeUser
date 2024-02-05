@@ -24,4 +24,6 @@ function reset-AzureADObject
         [Parameter(Mandatory = $false)]
         [string]$objectMailAddress
     )
+
+    write-host "Hello"
 }
